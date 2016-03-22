@@ -18,8 +18,6 @@ public class Connexion extends Thread {
     private ArrayList<Boolean> deletes;
 
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
     private BufferedOutputStream outData;
 
     private State state;
@@ -155,7 +153,7 @@ public class Connexion extends Thread {
                                     try
                                     {
                                       password = timestamp + password;
-                                      MessageDigest m=MessageDigest.getInstance("MD5");
+                                      MessageDigest m = MessageDigest.getInstance("MD5");
                                       m.update(password.getBytes(),0,password.length());
                                       password = new BigInteger(1,m.digest()).toString(16);
                                     }
@@ -242,8 +240,6 @@ public class Connexion extends Thread {
         } catch (IOException ex) {
             System.out.println("Error : " + ex.getMessage());
         } finally {
-            close(in);
-            close(out);
             close(outData);
             close(socket);
         }
