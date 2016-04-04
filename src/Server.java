@@ -1,11 +1,10 @@
-import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.net.*;
+import javax.net.ssl.*;
 
 /**
  * @author Jonathan & Damien
@@ -16,12 +15,13 @@ public class Server extends Thread {
     private HashMap<String, String> users;
     private HashMap<String, ArrayList<String>> emails;
 
-    // Create a new Server on the default port : 110
+    // Create a new Server on the default port : 5284
     public Server() {
         this(5284);
     }
 
     public Server(int _port) {
+        
         try {
             ServerSocketFactory context = SSLServerSocketFactory.getDefault();
             ss = (SSLServerSocket)context.createServerSocket(_port);
@@ -33,7 +33,8 @@ public class Server extends Thread {
                 }
             }
             cipher = new String[enabledCipher.size()];
-            for(int i = 0 ; i< enabledCipher.size(); i++) {
+            for(int i = 0 ; i< enabledCipher.size(); i++)
+            {
                 cipher[i] = enabledCipher.get(i);
             }
             ss.setEnabledCipherSuites(cipher);
@@ -48,7 +49,7 @@ public class Server extends Thread {
         emails.put("john", new ArrayList<String>());
         for(int i = 1; i < 43; i++)
         {
-            emails.get("john").add("From : god\r\nSubject : " + i + "\r\n\r\nMessage number " + i + "\r\n\r\n");
+            emails.get("john").add("From : god \r\nSubject : "+i+"\r\n\r\nMessage number " + i+"\r\n.\r\n");
         }
     }
 
