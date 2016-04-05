@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +16,11 @@ public class Server extends Thread {
     private HashMap<String, ArrayList<String>> emails;
 
     // Create a new Server on the default port : 5284
-    public Server() {
+    private Server() {
         this(5284);
     }
 
-    public Server(int _port) {
+    private Server(int _port) {
         
         try {
             ServerSocketFactory context = SSLServerSocketFactory.getDefault();
@@ -41,15 +41,42 @@ public class Server extends Thread {
         } catch (IOException ex) {
             System.err.println("Problem on port : " + _port + " : " + ex.getMessage());
         }
+
+        // Initialisation of users credentials and mails
         users = new HashMap<>();
         emails = new HashMap<>();
 
-        // Fill the users and emails
-        users.put("john", "doe");
-        emails.put("john", new ArrayList<String>());
-        for(int i = 1; i < 43; i++)
-        {
-            emails.get("john").add("From : god \r\nSubject : "+i+"\r\n\r\nMessage number " + i+"\r\n.\r\n");
+        try {
+            //DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(new File("Warehouse/john"))));
+
+            BufferedReader in = new BufferedReader(new FileReader("Warehouse/john"));
+
+            // Fill the users and emails
+            users.put("john", "doe");
+            emails.put("john", new ArrayList<String>());
+
+            String line;
+            String msg = "";
+            while ((line = in.readLine()) != null)
+            {
+                msg += line + "\r\n";
+                if(line.equals("."))
+                {
+                    System.out.println(msg);
+                    emails.get("john").add(msg);
+                    msg = "";
+                }
+            }
+
+            /*
+            while (bis.read(buf) != -1)
+            {
+
+                emails.get("john").add("From : god \r\nSubject : "+i+"\r\n\r\nMessage number " + i+"\r\n.\r\n");
+            }
+            */
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
