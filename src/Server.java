@@ -47,13 +47,11 @@ public class Server extends Thread {
         emails = new HashMap<>();
 
         try {
-            //DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(new File("Warehouse/john"))));
-
             BufferedReader in = new BufferedReader(new FileReader("Warehouse/john"));
 
             // Fill the users and emails
             users.put("john", "doe");
-            emails.put("john", new ArrayList<String>());
+            emails.put("john", new ArrayList<>());
 
             String line;
             String msg = "";
@@ -67,6 +65,8 @@ public class Server extends Thread {
                     msg = "";
                 }
             }
+
+            in.close();
 
             /*
             while (bis.read(buf) != -1)

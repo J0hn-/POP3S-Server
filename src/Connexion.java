@@ -9,17 +9,13 @@ import java.util.*;
 /**
  * @author Jonathan & Damien
  */
-public class Connexion extends Thread {
-
-    private final int TIMEOUT = 0; // TimeOut de 1 minute
+class Connexion extends Thread {
 
     private HashMap<String, String> users;
     private HashMap<String, ArrayList<String>> emails;
     private ArrayList<Boolean> deletes;
 
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
     private BufferedOutputStream outData;
 
     private State state;
@@ -27,13 +23,13 @@ public class Connexion extends Thread {
     private enum State {
         AUTHORIZATION,
         WAITING_FOR_PASSWORD,
-        TRANSACTION;
+        TRANSACTION
     }
 
-    public Connexion(Socket _socket, HashMap<String, String> _users, HashMap<String, ArrayList<String>> _emails) {
+    Connexion(Socket _socket, HashMap<String, String> _users, HashMap<String, ArrayList<String>> _emails) {
         socket = _socket;
         try {
-            socket.setSoTimeout(TIMEOUT);
+            socket.setSoTimeout(0);
         } catch (SocketException ex) {
             System.out.println("Error socket time-out : " + ex.getMessage());
         }
@@ -127,12 +123,19 @@ public class Connexion extends Thread {
                         try
                         {
                             for(int i = emails.get(user).size() - 1; i >= 0; --i)
-                            {
                                 if(deletes.get(i))
                                     emails.get(user).remove(i);
-                            }
-                            // Delete success
-                            ok();
+
+                            try {
+                                DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Warehouse/john"))));
+                                for (String msg: emails.get("john")) {
+                                    dos.write(msg.getBytes());
+                                }
+                                dos.close();
+                                // Delete success
+                                ok();
+                            } catch(Exception ignored) {}
+
                             System.out.println(emails.get(user).size());
                         } catch(Exception e) {
                             // Delete failed
@@ -203,7 +206,7 @@ public class Connexion extends Thread {
                                             int i = Integer.parseInt(lines[1]) - 1;
                                             if(!deletes.get(i))
                                             {
-                                                sendMail("+OK "+emails.get(user).get(i).length() + " octets \r\n"+emails.get(user).get(Integer.parseInt(lines[1]) - 1));
+                                                sendMail("+OK " + emails.get(user).get(i).length() + " octets \r\n" + emails.get(user).get(Integer.parseInt(lines[1]) - 1));
                                             }
                                         } catch (Exception e) {
                                             err();
@@ -245,8 +248,6 @@ public class Connexion extends Thread {
         } catch (IOException ex) {
             System.out.println("Error : " + ex.getMessage());
         } finally {
-            close(in);
-            close(out);
             close(outData);
             close(socket);
         }
@@ -257,7 +258,7 @@ public class Connexion extends Thread {
      *
      * @param stream stream need to be closed
      */
-    public void close(Object stream) {
+    private void close(Object stream) {
         if (stream == null) {
             return;
         }
