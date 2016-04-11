@@ -38,6 +38,7 @@ public class Server extends Thread {
                 cipher[i] = enabledCipher.get(i);
             }
             ss.setEnabledCipherSuites(cipher);
+
         } catch (IOException ex) {
             System.err.println("Problem on port : " + _port + " : " + ex.getMessage());
         }
@@ -46,12 +47,12 @@ public class Server extends Thread {
         users = new HashMap<>();
         emails = new HashMap<>();
 
+        // Fill the users and emails
+        users.put("john", "doe");
+        emails.put("john", new ArrayList<>());
+
         try {
             BufferedReader in = new BufferedReader(new FileReader("Warehouse/john"));
-
-            // Fill the users and emails
-            users.put("john", "doe");
-            emails.put("john", new ArrayList<>());
 
             String line;
             String msg = "";

@@ -103,14 +103,15 @@ class Connexion extends Thread {
     @Override
     public void run() {
         try {
+            state = State.AUTHORIZATION;
+
             outData = new BufferedOutputStream(socket.getOutputStream());
+
             Random rand = new Random();
             UUID uuid = UUID.randomUUID();
             String timestamp = uuid.toString().substring(0, rand.nextInt(25 - 15 + 1) + 15);
-            timestamp = "<"+timestamp+">";
-            ok("Server POP3 ready "+timestamp);
-
-            state = State.AUTHORIZATION;
+            timestamp = "<" + timestamp + ">";
+            ok("Server POP3 ready " + timestamp);
 
             String line;
             String user = "";
